@@ -31,7 +31,7 @@ def get_route(orig, dest, key):
     op = "&point=" + str(orig[0]) + "%2C" + str(orig[1])
     dp = "&point=" + str(dest[0]) + "%2C" + str(dest[1])
 
-    paths_url = route_url + urllib.parse.urlencode({"key": key}) + op + dp
+    paths_url = route_url + urllib.parse.urlencode({"key": key, "vehicle": medio_eng}) + op + dp
     paths_response = requests.get(paths_url)
 
     paths_status = paths_response.status_code
@@ -45,6 +45,7 @@ def get_route(orig, dest, key):
         horas = int(time // 3600)
         minutos = int((time % 3600) // 60)
         segundos = int(time % 60)
+        print("Desde " + orig[3] + " hasta " + dest[3] + " en " + medio + " son ")
         print(f"Distancia: {distance:.1f} km ({distance_mile:.1f} millas)")
         print(f"Tiempo estimado: {horas:02d}:{minutos:02d}:{segundos:02d}")
     else:
@@ -66,6 +67,27 @@ while True:
 
     orig = geocoding(loc1, key)
     dest = geocoding(loc2, key)
+    
+    print("Elige el medio de transporte \n auto, bicicleta, pie \n")
+    medio = input("elige tu medio de transporte:  ")
+    
+    if medio == "auto":
+        medio_eng = "car"
+
+    elif medio == "bicicleta" or medio == "bici":
+        medio_eng = "bike"
+    elif medio == "pie":
+        medio_eng = "foot"
+    else:
+        print("Porfavor selecciona una opcion valida")
+        continue
+
+
+
+    if orig[0] and dest[0] == 200:
+        op = "&point=" + str(orig[1]) + "%2C" + str(orig[2])
+        op = "&point=" + str(dest[1]) + "%2C" + str(dest[2])
+        paths_url = route_url + urllib.parse.urlencode({"key":key, "vehicle":medio_eng}) + op + dp
 
     if orig != ("null", "null") and dest != ("null", "null"):
         dist = get_route(orig, dest, key)
